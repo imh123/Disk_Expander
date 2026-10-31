@@ -1,0 +1,69 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.6.3'
+          arch: win64_msvc2019_64
+          modules: 'qttools qtsvg'
+          cache: true
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure
+        shell: pwsh
+        run: >
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+          -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR"
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item build\Release\Disk_Expander.exe dist\
+          Copy-Item README.md, LICENSE, THIRD_PARTY_NOTICES.md dist\
+          Copy-Item LICENSES dist\ -Recurse
+
+          & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --no-translations --no-opengl-sw --skip-plugin-types generic,networkinformation,tls --dir dist dist\Disk_Expander.exe
+          if (Test-Path dist\vc_redist.x64.exe) { Remove-Item dist\vc_redist.x64.exe }
+
+          $crt = Join-Path $env:VCToolsRedistDir 'x64\Microsoft.VC143.CRT'
+          if (Test-Path $crt) {
+            Copy-Item "$crt\msvcp140.dll" dist\
+            Copy-Item "$crt\msvcp140_1.dll" dist\
+            Copy-Item "$crt\vcruntime140.dll" dist\
+            Copy-Item "$crt\vcruntime140_1.dll" dist\
+          }
+
+          Compress-Archive -Path dist -DestinationPath Disk_Expander-win64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Disk_Expander-win64
+          path: Disk_Expander-win64.zip

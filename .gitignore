@@ -1,0 +1,30 @@
+# Build output
+/build/
+/build-*/
+/out/
+/dist/
+/tmp/
+/selftest_run/
+
+# Binaries / intermediates
+*.exe
+*.dll
+*.obj
+*.pdb
+*.ilk
+*.lib
+*.exp
+*.zip
+
+# Qt Creator / CMake user files
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+*.user
+*.pro.user
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
