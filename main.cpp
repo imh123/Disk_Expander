@@ -6,10 +6,8 @@
 #include <QApplication>
 #include <QFile>
 #include <QJsonDocument>
-#include <QLocale>
 #include <QMessageBox>
 #include <QPixmap>
-#include <QTranslator>
 
 int main(int argc, char *argv[])
 {
@@ -17,16 +15,6 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName(QStringLiteral("DiskExpander"));
     QApplication::setApplicationName(QStringLiteral("Disk Expander"));
     QApplication::setApplicationVersion(QStringLiteral("0.3.0"));
-
-    QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = QStringLiteral("Disk_Expander_") + QLocale(locale).name();
-        if (translator.load(QStringLiteral(":/i18n/") + baseName)) {
-            app.installTranslator(&translator);
-            break;
-        }
-    }
 
     // 无界面自检：扫描后写出 JSON，便于验证与问题反馈。
     const QStringList args = app.arguments();

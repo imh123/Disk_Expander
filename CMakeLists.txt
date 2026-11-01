@@ -9,9 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.2 REQUIRED COMPONENTS Widgets LinguistTools)
-
-set(TS_FILES Disk_Expander_zh_CN.ts)
+find_package(Qt6 6.2 REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -36,15 +34,12 @@ set(PROJECT_SOURCES
     rollbackdialog.h
     app.rc
     resources.qrc
-    ${TS_FILES}
 )
 
 qt_add_executable(Disk_Expander
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
 )
-
-qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_link_libraries(Disk_Expander PRIVATE
     Qt6::Widgets

@@ -28,7 +28,6 @@ jobs:
         with:
           version: '6.6.3'
           arch: win64_msvc2019_64
-          modules: 'qttools qtsvg'
           cache: true
           setup-python: false
 
@@ -55,7 +54,7 @@ jobs:
           Copy-Item README.md, LICENSE, THIRD_PARTY_NOTICES.md dist\
           Copy-Item LICENSES dist\ -Recurse
 
-          & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --no-translations --no-opengl-sw --skip-plugin-types generic,networkinformation,tls --dir dist dist\Disk_Expander.exe
+          & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --no-translations --no-opengl-sw --skip-plugin-types generic,networkinformation,tls,iconengines --dir dist dist\Disk_Expander.exe
           if (Test-Path dist\vc_redist.x64.exe) { Remove-Item dist\vc_redist.x64.exe }
 
           $crt = Join-Path $env:VCToolsRedistDir 'x64\Microsoft.VC143.CRT'
