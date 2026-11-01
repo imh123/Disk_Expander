@@ -30,6 +30,7 @@ jobs:
           arch: win64_msvc2019_64
           modules: 'qttools qtsvg'
           cache: true
+          setup-python: false
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
