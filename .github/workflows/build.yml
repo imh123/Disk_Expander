@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   windows:
@@ -72,3 +72,10 @@ jobs:
         with:
           name: Disk_Expander-win64
           path: Disk_Expander-win64.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Disk_Expander-win64.zip
+          generate_release_notes: true
